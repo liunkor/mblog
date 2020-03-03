@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} 首页 {% endblock %} - Blog diven by Django</title>
+</head>
+<body>
+    <div>
+        Categories for Nav:
+        {% for cate in navs %}
+            <a href="{% url 'category-list' cate.id %}">{{ cate.name }}</a>
+        {% endfor %}
+    </div>
+    <hr>
+
+    {% block main %}
+    {% endblock %}
+    <hr>
+
+    <div>底部分类：
+        {% for cate in categories %}
+            <a href="{% url 'category-list' cate.id %}">{{ cate.name }}</a>
+        {% endfor %}
+    </div>
+    <hr>
+
+    <div>
+        SideBar:
+        {% for sidebar in sidebars %}
+            <h4>{{ sidebar.title }}</h4>
+            <p>{{ sidebar.content }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
