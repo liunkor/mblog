@@ -1,8 +1,11 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .models import Post, Tag, Category
 from config.models import SideBar
+from comment.models import Comment
+from comment.form import CommentForm
 
 class CommonViewMixin:
     def get_context_data(self, **kwargs):
@@ -72,3 +75,35 @@ class PostDetailView(CommonViewMixin, DetailView):
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
 
+    #Replaced by customed django template Tag
+'''   def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'comment_form': CommentForm,
+            'comment_list': Comment.get_by_target(self.request.path)
+        })
+        return context
+'''
+
+class SearchView(IndexView):
+    def get_context_data(self):
+        context = super().get_context_data()
+        context.update(
+            {'keyword': self.request.GET.get('keyword', '')}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        keyword = self.request.GET.get('keyword')
+        print(keyword)
+        if not keyword:
+            return queryset
+        return queryset.filter(Q(title__icontains=keyword) | Q(desc__icontains=keyword))
+
+
+class AuthorView(IndexView):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        author_id = self.kwargs.get('owner_id')
+        return queryset.filter(owner_id=author_id)

@@ -1,0 +1,21 @@
+{% extends "./base.html" %}
+{% load comment_block %}
+
+{% block title %} {{ post.title }} {% endblock %}
+
+{% block main %}
+    {% if post %}
+        <h1>{{ post.title}}</h1>
+        <div>
+        <span>Category: <a href="{% url 'category-list' post.category_id %}">{{ post.category.name }}</a></span>
+        <span>Author: <a href="#">{{ post.owner.username }}</a></span>
+        <span>Published time: {{ post.created_time }}</span>
+    </div>
+        <hr/>
+        <p>
+            {{ post.content }}
+        </p>
+    {% endif %}
+
+    {% comment_block request.path %}
+{% endblock %}
